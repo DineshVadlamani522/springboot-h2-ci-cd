@@ -2,9 +2,8 @@ pipeline {
     agent any
 
     environment {
-        HOME = '/root' // Ensure this is correct for your Jenkins agent
-        KUBECONFIG = "${HOME}/.kube/config"
         DOCKER_IMAGE = 'dineshvadlamani/springboot-h2-ci-cd:latest'
+        KUBECONFIG = "${HOME}/.kube/config"
     }
 
     stages {
@@ -38,27 +37,32 @@ pipeline {
             }
         }
 
+        stage('Setup Kubernetes Context') {
+            steps {
+                script {
+                    sh """
+                        echo 'Setting Kubernetes Config...'
+                        mkdir -p $HOME/.kube
+                        cp ~/.kube/config $HOME/.kube/config || echo 'No existing kubeconfig found'
+                        export KUBECONFIG=$HOME/.kube/config
+                        kubectl config set-context docker-desktop --cluster=docker-desktop --user=docker-desktop || echo 'Context already exists'
+                        kubectl config use-context docker-desktop
+                        kubectl cluster-info
+                    """
+                }
+            }
+        }
+
         stage('Deploy to Kubernetes') {
             steps {
-                sh '''
-                    echo "Setting Kubernetes Config..."
-                    export KUBECONFIG=$HOME/.kube/config
-                    kubectl config use-context docker-desktop
-                    kubectl cluster-info
-                    kubectl get nodes
-                    echo "Applying deployment..."
-                    kubectl apply -f deployment.yaml --validate=false
-                '''
+                sh 'kubectl apply -f deployment.yaml --validate=false'
             }
         }
 
         stage('Verify Deployment') {
             steps {
-                sh '''
-                    echo "Checking Kubernetes deployment..."
-                    kubectl get pods -o wide
-                    kubectl get services -o wide
-                '''
+                sh 'kubectl get pods'
+                sh 'kubectl get services'
             }
         }
     }
