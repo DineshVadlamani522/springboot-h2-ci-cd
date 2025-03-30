@@ -2,12 +2,14 @@ pipeline {
     agent any
 
     environment {
+        HOME = '/root' // Ensure this is correct for your Jenkins agent
+        KUBECONFIG = "${HOME}/.kube/config"
         DOCKER_IMAGE = 'dineshvadlamani/springboot-h2-ci-cd:latest'
     }
 
     stages {
         stage('Clone Repository') {
-           steps {
+            steps {
                 git branch: 'feature',
                     credentialsId: 'github-credentials',
                     url: 'https://github.com/DineshVadlamani522/springboot-h2-ci-cd'
@@ -22,8 +24,7 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                  sh 'mvn sonar:sonar -Dsonar.host.url=http://localhost:9001 -Dsonar.login=squ_4cb2c18c4793e45c91bd585619b9f3fb85d1a18e'
-
+                sh 'mvn sonar:sonar -Dsonar.host.url=http://localhost:9001 -Dsonar.login=squ_4cb2c18c4793e45c91bd585619b9f3fb85d1a18e'
             }
         }
 
@@ -37,19 +38,27 @@ pipeline {
             }
         }
 
-      stage('Deploy to Kubernetes') {
+        stage('Deploy to Kubernetes') {
             steps {
-                sh """
+                sh '''
+                    echo "Setting Kubernetes Config..."
                     export KUBECONFIG=$HOME/.kube/config
                     kubectl config use-context docker-desktop
+                    kubectl cluster-info
+                    kubectl get nodes
+                    echo "Applying deployment..."
                     kubectl apply -f deployment.yaml --validate=false
-                """
+                '''
             }
         }
-          stage('Verify Deployment') {
+
+        stage('Verify Deployment') {
             steps {
-                sh 'kubectl get pods'
-                sh 'kubectl get services'
+                sh '''
+                    echo "Checking Kubernetes deployment..."
+                    kubectl get pods -o wide
+                    kubectl get services -o wide
+                '''
             }
         }
     }
