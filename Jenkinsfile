@@ -42,5 +42,11 @@ pipeline {
                 sh 'kubectl apply -f deployment.yaml'
             }
         }
+          stage('Verify Deployment') {
+            steps {
+                sh 'kubectl get pods'
+                sh 'kubectl get services'
+            }
+        }
     }
 }
