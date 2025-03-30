@@ -37,9 +37,13 @@ pipeline {
             }
         }
 
-       stage('Deploy to Kubernetes') {
+      stage('Deploy to Kubernetes') {
             steps {
-                sh 'kubectl apply -f deployment.yaml --validate=false'
+                sh """
+                    export KUBECONFIG=$HOME/.kube/config
+                    kubectl config use-context docker-desktop
+                    kubectl apply -f deployment.yaml --validate=false
+                """
             }
         }
           stage('Verify Deployment') {
