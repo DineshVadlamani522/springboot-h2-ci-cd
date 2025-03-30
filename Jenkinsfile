@@ -7,8 +7,10 @@ pipeline {
 
     stages {
         stage('Clone Repository') {
-            steps {
-                git 'https://github.com/dineshvadlamani/springboot-h2-ci-cd.git'
+           steps {
+                git branch: 'feature',
+                    credentialsId: 'github-credentials',
+                    url: 'https://github.com/DineshVadlamani522/springboot-h2-ci-cd'
             }
         }
 
