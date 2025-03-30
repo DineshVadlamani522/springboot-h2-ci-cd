@@ -22,7 +22,8 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                sh 'mvn sonar:sonar -Dsonar.host.url=http://localhost:9001'
+                  sh 'mvn sonar:sonar -Dsonar.host.url=http://localhost:9001 -Dsonar.login=squ_97de1f6588587017f115d736c230ef8d20065f6b'
+
             }
         }
 
