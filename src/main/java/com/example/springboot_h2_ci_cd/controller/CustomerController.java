@@ -19,6 +19,10 @@ public class CustomerController {
         this.customerRepository = customerRepository;
     }
 
+    @GetMapping("/hello")
+    public String sayHello() {
+        return "Hello, Jenkins CI/CD!";
+    }
     @GetMapping
     public List<Customer> getAllCustomers() {
         return customerRepository.findAll();
