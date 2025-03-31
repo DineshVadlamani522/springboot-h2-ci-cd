@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = 'dineshvadlamani/springboot-h2-ci-cd:latest'
-        KUBECONFIG = "${HOME}/.kube/config"
+        KUBECONFIG = "/var/jenkins_home/.kube/config"  // Adjust for your Jenkins environment
     }
 
     stages {
@@ -42,14 +42,19 @@ pipeline {
                 script {
                     sh """
                         echo 'Setting Kubernetes Config...'
-                        mkdir -p $HOME/.kube
-                        cp ~/.kube/config $HOME/.kube/config || echo 'No existing kubeconfig found'
-                        export KUBECONFIG=$HOME/.kube/config
-                        kubectl config set-context docker-desktop --cluster=docker-desktop --user=docker-desktop || echo 'Context already exists'
-                        kubectl config use-context docker-desktop
+                        mkdir -p /var/jenkins_home/.kube
+                        cp /root/.kube/config /var/jenkins_home/.kube/config || echo 'No existing kubeconfig found'
+                        export KUBECONFIG=/var/jenkins_home/.kube/config
+                        kubectl config use-context docker-desktop || echo 'Context already set'
                         kubectl cluster-info
                     """
                 }
+            }
+        }
+
+        stage('Test Kubernetes Access') {
+            steps {
+                sh 'kubectl get nodes'
             }
         }
 
