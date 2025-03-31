@@ -2,8 +2,9 @@ pipeline {
     agent any
 
     environment {
+        HOME = '/root' // Ensure this is correct for your Jenkins agent
+        KUBECONFIG = "${HOME}/.kube/config"
         DOCKER_IMAGE = 'dineshvadlamani/springboot-h2-ci-cd:latest'
-        KUBECONFIG = "/root/.kube/config"  // Path inside Jenkins container
     }
 
     stages {
@@ -37,32 +38,27 @@ pipeline {
             }
         }
 
-        stage('Setup Kubernetes Context') {
-            steps {
-                script {
-                    sh """
-                        echo 'Setting Kubernetes Config...'
-                        mkdir -p /root/.kube
-                        cp ~/.kube/config /root/.kube/config || echo 'No existing kubeconfig found'
-                        export KUBECONFIG=/root/.kube/config
-                        kubectl config get-contexts
-                        kubectl config use-context docker-desktop || echo 'Context already set'
-                        kubectl cluster-info
-                    """
-                }
-            }
-        }
-
         stage('Deploy to Kubernetes') {
             steps {
-                sh 'kubectl apply -f deployment.yaml --validate=false'
+                sh '''
+                    echo "Setting Kubernetes Config..."
+                    export KUBECONFIG=$HOME/.kube/config
+                    kubectl config use-context docker-desktop
+                    kubectl cluster-info
+                    kubectl get nodes
+                    echo "Applying deployment..."
+                    kubectl apply -f deployment.yaml --validate=false
+                '''
             }
         }
 
         stage('Verify Deployment') {
             steps {
-                sh 'kubectl get pods'
-                sh 'kubectl get services'
+                sh '''
+                    echo "Checking Kubernetes deployment..."
+                    kubectl get pods -o wide
+                    kubectl get services -o wide
+                '''
             }
         }
     }
