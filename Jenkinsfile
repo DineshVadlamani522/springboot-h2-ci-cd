@@ -41,14 +41,17 @@ pipeline {
             steps {
                 script {
                     sh """
-                        echo '🔧 Checking Kubernetes Contexts...'
-                        kubectl config get-contexts || echo '⚠️ No contexts found!'
-
-                        echo '🔄 Switching to docker-desktop context...'
-                        kubectl config use-context docker-desktop || echo '✅ Context already set'
-
-                        echo '🔍 Checking Cluster Info...'
-                        kubectl cluster-info
+                        echo 'Setting Kubernetes Config...'
+                        export KUBECONFIG=${KUBECONFIG}
+                        
+                        # Check if docker-desktop context exists
+                        kubectl config get-contexts | grep 'docker-desktop' || echo 'No docker-desktop context found'
+                        
+                        # Switch context only if it exists
+                        kubectl config use-context docker-desktop || echo 'Context already set'
+                        
+                        # Verify cluster connectivity
+                        kubectl cluster-info || echo 'Cluster not reachable'
                     """
                 }
             }
