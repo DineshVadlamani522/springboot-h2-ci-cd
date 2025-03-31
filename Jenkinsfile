@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = 'dineshvadlamani/springboot-h2-ci-cd:latest'
-        KUBECONFIG = "/root/.kube/config"  // Path inside Jenkins container
+        KUBECONFIG = "C:/Users/DINESH/.kube/config"  // Correct kubeconfig path for Windows
     }
 
     stages {
@@ -41,12 +41,13 @@ pipeline {
             steps {
                 script {
                     sh """
-                        echo 'Setting Kubernetes Config...'
-                        mkdir -p /root/.kube
-                        cp ~/.kube/config /root/.kube/config || echo 'No existing kubeconfig found'
-                        export KUBECONFIG=/root/.kube/config
-                        kubectl config get-contexts
-                        kubectl config use-context docker-desktop || echo 'Context already set'
+                        echo '🔧 Checking Kubernetes Contexts...'
+                        kubectl config get-contexts || echo '⚠️ No contexts found!'
+
+                        echo '🔄 Switching to docker-desktop context...'
+                        kubectl config use-context docker-desktop || echo '✅ Context already set'
+
+                        echo '🔍 Checking Cluster Info...'
                         kubectl cluster-info
                     """
                 }
