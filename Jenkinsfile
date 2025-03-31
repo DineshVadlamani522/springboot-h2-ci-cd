@@ -41,19 +41,13 @@ pipeline {
             steps {
                 script {
                     sh """
-                        echo '🔧 Setting up Kubernetes Config...'
+                        echo 'Setting Kubernetes Config...'
                         mkdir -p /root/.kube
-                        cp ~/.kube/config /root/.kube/config || echo '⚠️ No existing kubeconfig found'
+                        cp ~/.kube/config /root/.kube/config || echo 'No existing kubeconfig found'
                         export KUBECONFIG=/root/.kube/config
-                        
-                        echo '🔍 Checking available Kubernetes contexts...'
                         kubectl config get-contexts
-                        
-                        echo '🔄 Switching to docker-desktop context...'
-                        kubectl config use-context docker-desktop || echo '✅ Context already set'
-                        
-                        echo '🔍 Verifying Kubernetes Cluster Info...'
-                        kubectl cluster-info || echo '⚠️ Failed to connect to cluster'
+                        kubectl config use-context docker-desktop || echo 'Context already set'
+                        kubectl cluster-info
                     """
                 }
             }
