@@ -18,38 +18,58 @@
 
 	<properties>
 		<java.version>17</java.version>
-		<!-- SonarQube Properties -->
-		<sonar.host.url>http://localhost:9001</sonar.host.url>
-		<sonar.login>squ_4cb2c18c4793e45c91bd585619b9f3fb85d1a18e</sonar.login>
+
+		<!-- SonarQube Configuration -->
+		<sonar.host.url>http://localhost:9001</sonar.host.url> <!-- Update with your SonarQube server URL -->
+		<sonar.login>squ_4cb2c18c4793e45c91bd585619b9f3fb85d1a18e</sonar.login> <!-- Your SonarQube token -->
+
+		<!-- Optional SonarQube Properties -->
+		<sonar.projectKey>springboot-h2-ci-cd</sonar.projectKey>
+		<sonar.projectName>Spring Boot with H2 and CI/CD</sonar.projectName>
+		<sonar.projectVersion>1.0</sonar.projectVersion>
+		<sonar.sourceEncoding>UTF-8</sonar.sourceEncoding>
 	</properties>
 
 	<dependencies>
+		<!-- Spring Boot Actuator for production monitoring and management -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
+
+		<!-- Micrometer Prometheus Registry for exposing metrics to Prometheus -->
 		<dependency>
 			<groupId>io.micrometer</groupId>
 			<artifactId>micrometer-registry-prometheus</artifactId>
 		</dependency>
+
+		<!-- Logback JSON Encoder for structured logging -->
 		<dependency>
 			<groupId>net.logstash.logback</groupId>
 			<artifactId>logstash-logback-encoder</artifactId>
 			<version>7.3</version>
 		</dependency>
+
+		<!-- Spring Data JPA for data access layer -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
+
+		<!-- Spring Boot Web Starter for building web applications -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+
+		<!-- H2 Database for an in-memory database during development -->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+
+		<!-- Spring Boot Starter Test for testing -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -59,6 +79,7 @@
 
 	<build>
 		<plugins>
+			<!-- Spring Boot Maven Plugin to repackage the application as a runnable jar -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
@@ -72,6 +93,7 @@
 				</executions>
 			</plugin>
 
+			<!-- Maven Jar Plugin to control the final JAR filename -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
@@ -81,7 +103,7 @@
 				</configuration>
 			</plugin>
 
-			<!-- SonarQube Plugin -->
+			<!-- SonarQube Maven Plugin to trigger the analysis -->
 			<plugin>
 				<groupId>org.sonarsource.scanner.maven</groupId>
 				<artifactId>sonar-maven-plugin</artifactId>
