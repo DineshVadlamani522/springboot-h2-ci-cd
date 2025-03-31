@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: elasticsearch
-          image: elasticsearch:7.17.3
+          image: docker.elastic.co/elasticsearch/elasticsearch:8.5.1
           env:
             - name: discovery.type
               value: single-node
@@ -35,4 +35,4 @@ spec:
     - protocol: TCP
       port: 9200
       targetPort: 9200
-      nodePort: 7002  # Assigned custom port
+      nodePort: 31002

@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: kibana
-          image: kibana:7.17.3
+          image: docker.elastic.co/kibana/kibana:8.5.1
           ports:
             - containerPort: 5601
 ---
@@ -32,4 +32,4 @@ spec:
     - protocol: TCP
       port: 5601
       targetPort: 5601
-      nodePort: 7004  # Assigned custom port
+      nodePort: 31004
