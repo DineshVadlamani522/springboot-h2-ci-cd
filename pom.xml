@@ -21,7 +21,7 @@
 
 		<!-- SonarQube Configuration -->
 		<sonar.host.url>http://localhost:9001</sonar.host.url> <!-- Update with your SonarQube server URL -->
-		<sonar.login>squ_4cb2c18c4793e45c91bd585619b9f3fb85d1a18e</sonar.login> <!-- Your SonarQube token -->
+		<sonar.login>squ_1b8ede8f6c600e0336ce3da0af9d72b8f7279731</sonar.login> <!-- Your SonarQube token -->
 
 		<!-- Optional SonarQube Properties -->
 		<sonar.projectKey>springboot-h2-ci-cd</sonar.projectKey>
